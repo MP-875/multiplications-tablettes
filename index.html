@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Entraînement Tables</title>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+
+<style>
+    body {
+        font-family: Arial;
+        text-align: center;
+        margin-top: 30px;
+        background-color: #f5f5f5;
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    #buttons {
+        margin: 20px;
+    }
+
+    button {
+        margin: 5px;
+        padding: 15px;
+        font-size: 20px;
+        cursor: pointer;
+        border-radius: 10px;
+        border: none;
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    #exercise {
+        margin-top: 30px;
+        font-size: 28px;
+    }
+
+    input {
+        width: 60px;
+        font-size: 24px;
+        text-align: center;
+        margin: 10px;
+    }
+
+    #feedback {
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    #score {
+        margin-top: 30px;
+        font-size: 30px;
+        color: blue;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Entraînement aux multiplications</h1>
+
+<p>Choisis une limite :</p>
+
+<div id="buttons"></div>
+
+<div id="exercise" style="display:none;">
+    <p id="question"></p>
+
+    <input type="number" id="aInput" placeholder="a">
+    ×
+    <input type="number" id="bInput" placeholder="b">
+
+    <br>
+
+    <button onclick="checkAnswer()">Valider</button>
+
+    <div id="feedback"></div>
+</div>
+
+<div id="score"></div>
+
+<script>
+
+let maxNumber = 10;
+
+let currentA;
+let currentB;
+
+let currentQuestion = 0;
+let maxQuestions = 30;
+
+let score = 0;
+let attempts = 0;
+
+for (let i = 1; i <= 15; i++) {
+    let btn = document.createElement("button");
+    btn.innerText = i;
+    btn.onclick = () => startGame(i);
+    document.getElementById("buttons").appendChild(btn);
+}
+
+function startGame(n) {
+    maxNumber = n;
+
+    currentQuestion = 0;
+    score = 0;
+
+    document.getElementById("score").innerHTML = "";
+
+    nextQuestion();
+}
+
+function nextQuestion() {
+
+    if (currentQuestion >= maxQuestions) {
+        endGame();
+        return;
+    }
+
+    attempts = 0;
+
+    currentA = Math.floor(Math.random() * maxNumber) + 1;
+    currentB = Math.floor(Math.random() * maxNumber) + 1;
+
+    let product = currentA * currentB;
+
+    document.getElementById("exercise").style.display = "block";
+
+    document.getElementById("question").innerHTML =
+        `Question ${currentQuestion + 1}/30 : ${product}`;
+
+    document.getElementById("aInput").value = "";
+    document.getElementById("bInput").value = "";
+
+    document.getElementById("feedback").innerHTML = "";
+
+    currentQuestion++;
+}
+
+function checkAnswer() {
+
+    let a = parseInt(document.getElementById("aInput").value);
+    let b = parseInt(document.getElementById("bInput").value);
+
+    attempts++;
+
+    let correct =
+        (a === currentA && b === currentB) ||
+        (a === currentB && b === currentA);
+
+    if (correct) {
+
+        score++;
+
+        document.getElementById("feedback").innerHTML =
+            "✅ Correct !";
+
+        setTimeout(nextQuestion, 1000);
+
+    } else {
+
+        if (attempts >= 2) {
+
+            document.getElementById("feedback").innerHTML =
+                `❌ Faux. Réponse : ${currentA} × ${currentB}`;
+
+            setTimeout(nextQuestion, 1500);
+
+        } else {
+
+            document.getElementById("feedback").innerHTML =
+                "❌ Essaie encore.";
+        }
+    }
+}
+
+function endGame() {
+
+    document.getElementById("exercise").style.display = "none";
+
+    document.getElementById("score").innerHTML =
+        `🎉 Score final : ${score} / ${maxQuestions}`;
+}
+
+</script>
+
+</body>
+</html>
