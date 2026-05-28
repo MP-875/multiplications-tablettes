@@ -75,7 +75,7 @@ input{
 
 #score{
     margin-top:40px;
-    font-size:38px;
+    font-size:36px;
     color:blue;
 }
 
@@ -122,11 +122,13 @@ let currentProduct = 0;
 
 let currentQuestion = 0;
 
-const maxQuestions = 30;
+const maxQuestions = 12;
 
 let score = 0;
 
 let attempts = 0;
+
+let wrongAnswers = [];
 
 
 /* ---------------- BOUTONS 1 → 15 ---------------- */
@@ -157,6 +159,8 @@ function startGame(n){
     currentQuestion = 0;
 
     score = 0;
+
+    wrongAnswers = [];
 
     document.getElementById("score").innerHTML = "";
 
@@ -192,7 +196,9 @@ function nextQuestion(){
         .innerHTML =
         "Question "
         + (currentQuestion + 1)
-        + " / 30 : "
+        + " / "
+        + maxQuestions
+        + " : "
         + currentProduct;
 
     document.getElementById("aInput").value = "";
@@ -248,6 +254,8 @@ function checkAnswer(){
 
         if(attempts >= 2){
 
+            wrongAnswers.push(currentProduct);
+
             document.getElementById("feedback")
                 .innerHTML =
                 "❌ Faux.";
@@ -271,12 +279,31 @@ function endGame(){
     document.getElementById("exercise")
         .style.display = "none";
 
-    document.getElementById("score")
-        .innerHTML =
+    let resultText =
         "🎉 Score final : "
         + score
         + " / "
         + maxQuestions;
+
+    if(wrongAnswers.length > 0){
+
+        resultText +=
+            "<br><br>❌ Valeurs fausses :<br>";
+
+        for(let i = 0; i < wrongAnswers.length; i++){
+
+            resultText +=
+                wrongAnswers[i] + "<br>";
+        }
+
+    }else{
+
+        resultText +=
+            "<br><br>🏆 Aucune erreur !";
+    }
+
+    document.getElementById("score")
+        .innerHTML = resultText;
 }
 
 </script>
