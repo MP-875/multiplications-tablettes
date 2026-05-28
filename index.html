@@ -152,9 +152,7 @@ function checkAnswer() {
 
     attempts++;
 
-    let correct =
-        (a === currentA && b === currentB) ||
-        (a === currentB && b === currentA);
+    let correct = (a * b === currentA * currentB);
 
     if (correct) {
 
@@ -170,7 +168,7 @@ function checkAnswer() {
         if (attempts >= 2) {
 
             document.getElementById("feedback").innerHTML =
-                `❌ Faux. Réponse : ${currentA} × ${currentB}`;
+                `❌ Faux. Une réponse possible : ${currentA} × ${currentB}`;
 
             setTimeout(nextQuestion, 1500);
 
@@ -181,7 +179,6 @@ function checkAnswer() {
         }
     }
 }
-
 function endGame() {
 
     document.getElementById("exercise").style.display = "none";
