@@ -1,65 +1,84 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 <meta charset="UTF-8">
-<title>Entraînement Tables</title>
-
-<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+<title>Entraînement Multiplications</title>
 
 <style>
-    body {
-        font-family: Arial;
-        text-align: center;
-        margin-top: 30px;
-        background-color: #f5f5f5;
-    }
 
-    h1 {
-        color: #333;
-    }
+body{
+    font-family:Arial, sans-serif;
+    text-align:center;
+    background:#f4f4f4;
+    margin-top:30px;
+}
 
-    #buttons {
-        margin: 20px;
-    }
+h1{
+    color:#333;
+}
 
-    button {
-        margin: 5px;
-        padding: 15px;
-        font-size: 20px;
-        cursor: pointer;
-        border-radius: 10px;
-        border: none;
-        background-color: #4CAF50;
-        color: white;
-    }
+#buttons{
+    margin:20px;
+}
 
-    button:hover {
-        background-color: #45a049;
-    }
+.levelButton{
+    padding:12px 18px;
+    margin:5px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    background:#4CAF50;
+    color:white;
+    cursor:pointer;
+}
 
-    #exercise {
-        margin-top: 30px;
-        font-size: 28px;
-    }
+.levelButton:hover{
+    background:#45a049;
+}
 
-    input {
-        width: 60px;
-        font-size: 24px;
-        text-align: center;
-        margin: 10px;
-    }
+#exercise{
+    margin-top:30px;
+}
 
-    #feedback {
-        margin-top: 20px;
-        font-size: 24px;
-        font-weight: bold;
-    }
+#question{
+    font-size:50px;
+    margin-bottom:25px;
+}
 
-    #score {
-        margin-top: 30px;
-        font-size: 30px;
-        color: blue;
-    }
+input{
+    width:80px;
+    font-size:30px;
+    text-align:center;
+    margin:10px;
+}
+
+#validateButton{
+    padding:12px 25px;
+    font-size:22px;
+    border:none;
+    border-radius:10px;
+    background:#2196F3;
+    color:white;
+    cursor:pointer;
+}
+
+#validateButton:hover{
+    background:#1976D2;
+}
+
+#feedback{
+    margin-top:20px;
+    font-size:28px;
+    font-weight:bold;
+}
+
+#score{
+    margin-top:40px;
+    font-size:38px;
+    color:blue;
+}
+
 </style>
 </head>
 
@@ -72,45 +91,71 @@
 <div id="buttons"></div>
 
 <div id="exercise" style="display:none;">
-    <p id="question"></p>
+
+    <div id="question"></div>
 
     <input type="number" id="aInput" placeholder="a">
+
     ×
+
     <input type="number" id="bInput" placeholder="b">
 
-    <br>
+    <br><br>
 
-    <button onclick="checkAnswer()">Valider</button>
+    <button id="validateButton" onclick="checkAnswer()">
+        Valider
+    </button>
 
     <div id="feedback"></div>
+
 </div>
 
 <div id="score"></div>
 
 <script>
 
+/* ---------------- VARIABLES ---------------- */
+
 let maxNumber = 10;
 
-let currentA;
-let currentB;
+let currentProduct = 0;
 
 let currentQuestion = 0;
-let maxQuestions = 30;
+
+const maxQuestions = 30;
 
 let score = 0;
+
 let attempts = 0;
 
-for (let i = 1; i <= 15; i++) {
+
+/* ---------------- BOUTONS 1 → 15 ---------------- */
+
+for(let i = 1; i <= 15; i++){
+
     let btn = document.createElement("button");
+
     btn.innerText = i;
-    btn.onclick = () => startGame(i);
-    document.getElementById("buttons").appendChild(btn);
+
+    btn.className = "levelButton";
+
+    btn.onclick = function(){
+        startGame(i);
+    };
+
+    document.getElementById("buttons")
+        .appendChild(btn);
 }
 
-function startGame(n) {
+
+/* ---------------- DÉBUT PARTIE ---------------- */
+
+function startGame(n){
+
     maxNumber = n;
 
     currentQuestion = 0;
+
     score = 0;
 
     document.getElementById("score").innerHTML = "";
@@ -118,26 +163,40 @@ function startGame(n) {
     nextQuestion();
 }
 
-function nextQuestion() {
 
-    if (currentQuestion >= maxQuestions) {
+/* ---------------- QUESTION SUIVANTE ---------------- */
+
+function nextQuestion(){
+
+    if(currentQuestion >= maxQuestions){
+
         endGame();
+
         return;
     }
 
     attempts = 0;
 
-    currentA = Math.floor(Math.random() * maxNumber) + 1;
-    currentB = Math.floor(Math.random() * maxNumber) + 1;
+    let a =
+        Math.floor(Math.random() * maxNumber) + 1;
 
-    let product = currentA * currentB;
+    let b =
+        Math.floor(Math.random() * maxNumber) + 1;
 
-    document.getElementById("exercise").style.display = "block";
+    currentProduct = a * b;
 
-    document.getElementById("question").innerHTML =
-        `Question ${currentQuestion + 1}/30 : ${product}`;
+    document.getElementById("exercise")
+        .style.display = "block";
+
+    document.getElementById("question")
+        .innerHTML =
+        "Question "
+        + (currentQuestion + 1)
+        + " / 30 : "
+        + currentProduct;
 
     document.getElementById("aInput").value = "";
+
     document.getElementById("bInput").value = "";
 
     document.getElementById("feedback").innerHTML = "";
@@ -145,46 +204,79 @@ function nextQuestion() {
     currentQuestion++;
 }
 
-function checkAnswer() {
 
-    let a = parseInt(document.getElementById("aInput").value);
-    let b = parseInt(document.getElementById("bInput").value);
+/* ---------------- VÉRIFICATION ---------------- */
+
+function checkAnswer(){
+
+    let a =
+        parseInt(
+            document.getElementById("aInput").value
+        );
+
+    let b =
+        parseInt(
+            document.getElementById("bInput").value
+        );
 
     attempts++;
 
-    let correct = (a * b === currentA * currentB);
+    let correct = false;
 
-    if (correct) {
+    if(
+        !isNaN(a) &&
+        !isNaN(b) &&
+        a >= 1 &&
+        b >= 1 &&
+        a <= maxNumber &&
+        b <= maxNumber &&
+        a * b === currentProduct
+    ){
+        correct = true;
+    }
+
+    if(correct){
 
         score++;
 
-        document.getElementById("feedback").innerHTML =
-            "✅ Correct !";
+        document.getElementById("feedback")
+            .innerHTML = "✅ Correct !";
 
-        setTimeout(nextQuestion, 1000);
+        setTimeout(nextQuestion,1000);
 
-    } else {
+    }else{
 
-        if (attempts >= 2) {
+        if(attempts >= 2){
 
-            document.getElementById("feedback").innerHTML =
-                `❌ Faux. Une réponse possible : ${currentA} × ${currentB}`;
+            document.getElementById("feedback")
+                .innerHTML =
+                "❌ Faux.";
 
-            setTimeout(nextQuestion, 1500);
+            setTimeout(nextQuestion,1500);
 
-        } else {
+        }else{
 
-            document.getElementById("feedback").innerHTML =
+            document.getElementById("feedback")
+                .innerHTML =
                 "❌ Essaie encore.";
         }
     }
 }
-function endGame() {
 
-    document.getElementById("exercise").style.display = "none";
 
-    document.getElementById("score").innerHTML =
-        `🎉 Score final : ${score} / ${maxQuestions}`;
+/* ---------------- FIN ---------------- */
+
+function endGame(){
+
+    document.getElementById("exercise")
+        .style.display = "none";
+
+    document.getElementById("score")
+        .innerHTML =
+        "🎉 Score final : "
+        + score
+        + " / "
+        + maxQuestions;
 }
 
 </script>
